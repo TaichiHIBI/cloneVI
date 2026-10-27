@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+cache/
+
+# data and fits (from Zenodo)
+data/*
+!data/README.md
+output/*
+!output/README.md
+
+# raw data folders used by preprocess/, at the repository root (not preprocess/MAESTER/ itself)
+/MAESTER/
+/mtscATAC-seq/
+/GSE302113/
+# PBMC3k downloaded by Scanpy when preprocess/simulation/simulation_datasets.ipynb is run
+/preprocess/simulation/data/
+
+# files written by the notebooks and scripts (figure panels, tables, intermediate results)
+/analysis/results/
