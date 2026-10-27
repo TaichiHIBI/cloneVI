@@ -16,7 +16,7 @@ The files marked "public" are not in the record; download them from the source.
 | `simulation/back_0.5_dropout/{adata.h5ad, adata_mg.h5ad, cluster_probs.json}` | simulated data of Fig. 2 (the clone draws were not seeded, so the deposited data are the reference) | Zenodo | `preprocess/simulation/simulation_datasets.ipynb` | training, `analysis/01_simulation.ipynb` |
 | `h5ad_files_RNA/rna_exp.h5ad` | MAESTER expression | Zenodo | `preprocess/MAESTER/` | training, `analysis/02_maester.ipynb` |
 | `h5ad_files_RNA/rna_mgv_counts.h5ad` | MAESTER mtDNA allele counts | Zenodo | `preprocess/MAESTER/` | training |
-| `ATAC/PT1_pos.h5ad` | CLL accessibility (top 25% of peaks) | Zenodo | `preprocess/CLL/` | training, `analysis/03a_cll.ipynb`, `analysis/03e_cll_figure4.ipynb` |
+| `ATAC/PT1_pos.h5ad` | CLL accessibility (raw counts of the 107,497 peaks observed in at least 10 cells; LSI clusters) | Zenodo | `preprocess/CLL/` | training, `analysis/03a_cll.ipynb`, `analysis/03e_cll_figure4.ipynb` |
 | `ATAC/PT1_pos_mg.h5ad` | CLL mtDNA allele counts | Zenodo | `preprocess/CLL/` | training |
 | `ATAC/flagment/CLL_PT1_CD19pos_v12-mtMask_fragments.tsv.gz(.tbi)` | fragments of the source study | public (https://osf.io/bupge/, `source/cellranger_output/`; make the index with `tabix -p bed`) | | `analysis/03b_cll_gene_activity.R`, `analysis/03d_cll_coverage.R` |
 | `mitotrek/cohort_Ovarian_atac_top25.h5ad` | ovarian cohort accessibility (top 25% of peaks, raw counts) | Zenodo | `preprocess/ovarian/build_model_inputs.ipynb` | training |
@@ -30,5 +30,5 @@ The files marked "public" are not in the record; download them from the source.
 there instead: `mkdir -p analysis/results/ovarian && cp -r data/mitotrek/chromvar analysis/results/ovarian/`.
 
 The CLL gene activity and the inputs of the CLL R scripts are computed by `analysis/` (`analysis/results/cll/`).
-`preprocess/ovarian/build_model_inputs.ipynb` writes its files to `mitotrek/rebuilt/` and compares them with the
-deposited ones.
+The notebooks `preprocess/{MAESTER,CLL,ovarian}/build_model_inputs.ipynb` write the model inputs to
+`h5ad_files_RNA/rebuilt/`, `ATAC/rebuilt/` and `mitotrek/rebuilt/` and compare them with the deposited ones.

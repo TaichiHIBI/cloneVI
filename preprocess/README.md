@@ -1,29 +1,49 @@
 # From the public raw data to the model inputs
 
-The scripts are the ones used for the study; only their paths were changed. They expect the raw data in folders at the
-repository root (`MAESTER/`, `mtscATAC-seq/`, `GSE302113/`) and were run on different machines (the ovarian raw data on a
-cluster with a job scheduler). The files they produce are deposited on Zenodo (`data/`), so the results do not require
-rerunning them. Steps whose code was not preserved are marked; for these the deposited files are the reference.
+The scripts expect the raw data in folders at the repository root (`MAESTER/`, `mtscATAC-seq/`, `GSE302113/`) and are run
+from the repository root, the notebooks from their own folder. The files they produce are deposited on Zenodo (`data/`),
+so the results do not require rerunning them. Each dataset ends with a notebook `build_model_inputs.ipynb` that writes
+the model inputs to a `rebuilt/` folder next to the deposited ones and compares the two; the notebooks are kept with
+the outputs of that comparison. The ovarian scripts are the ones used for the study, with only their paths changed and
+run on a cluster. For MAESTER and CLL the study's code, written for one machine and for more samples than were used,
+was gathered into the scripts below for the one sample used, and the steps whose code was not kept were rewritten;
+they reproduce the deposited model inputs from the public data, as the notebooks show.
 
 ## MAESTER (GEO GSE182685; Miller et al. 2022)
-Place `BPDCN712_Seurat_with_TCR.rds` and `TenX_BPDCN712_All_mr3_maegatk.rds` from GEO in `MAESTER/clonalhemato/`.
-1. `MAESTER/output.R` — writes the maegatk allele counts as `.mtx` files (`MAESTER/rds_output/`) and converts the Seurat
-   object to `rna_exp.h5seurat`/`.h5ad` with SeuratDisk. The deposited `data/h5ad_files_RNA/rna_exp.h5ad` is the reference:
-   its `MT_clone_num` column holds numbers, whereas this script would store it as true/false, so the file was made with a
-   slightly different version of these lines that was not kept.
-2. `MAESTER/MAESTER_RNAmgv2h5ad.ipynb` (cells 1–20) — `.mtx` files → `rna_mgv_counts.h5ad` (the output is identical to
-   the deposited file).
+Place the GEO files `GSM5534705_BPDCN712_10x_scRNAseq_Expression.txt.gz`, `GSM5534705_BPDCN712_10x_scRNAseq_MetaData.txt.gz`
+and `GSM5534706_BPDCN712_10x_MAESTER_maegatk.rds.gz` in `MAESTER/`, and decompress the last one (`gunzip`; the `.rds`
+inside is the maegatk object of the source study used for the study, byte for byte).
+1. `MAESTER/export_maegatk.R` — the maegatk allele counts and coverage as `.mtx` files in `MAESTER/rds_output/`
+   (identical to the files read for the study).
+2. `MAESTER/build_model_inputs.ipynb` — `rna_mgv_counts.h5ad` from these files and `rna_exp.h5ad` from the expression and
+   metadata of GEO, written to `data/h5ad_files_RNA/rebuilt/`. `rna_mgv_counts.h5ad` is identical to the deposited
+   file. For the study `rna_exp.h5ad` was converted from the source study's Seurat object (`BPDCN712_Seurat_with_TCR.rds`),
+   distributed on a web site that is no longer online; the GEO files give the same counts and cell metadata, but not the
+   columns of the source study's T/NK, TCR and mtDNA-clone analyses (`MT_clone`, `MT_clone_num` and five others).
+   `retrain/prep_maester.py` reads `MT_clone_num` to color a plot drawn after the fit, so it runs on the deposited file.
 The 26 variants used are those analysed in the original study (`retrain/prep_maester.py`).
 
-## CLL mtscATAC-seq (Lareau et al. 2021; https://osf.io/bupge/)
-Place `mtscATACpaper_large_data_files/` (source data, cellranger and mgatk outputs) and the study's reproducibility
-repository `mtscATACpaper_reproducibility/` in `mtscATAC-seq/`.
-1. `CLL/get_filtering_num.R` — lists the cells to remove (`CLL/row_del/`, included).
-2. `CLL/signac_pp.R` — Signac: peak-by-cell counts, cell and peak filters, top 25% of peaks → `PT1_pos_pp`.
-3. `CLL/rds2h5ad.ipynb`, `CLL/rds_setup_h5ad.ipynb`, `CLL/filtering_call.ipynb` — mgatk allele counts → `PT1_pos_mg.h5ad`.
-   The step that exported the mgatk `.rds` object to the `.mtx` files read here was not preserved, and which of these
-   notebooks wrote the deposited file is not certain.
-4. `CLL/clone_definition.ipynb` — `PT1_pos_pp` and the clone table of the source study → `PT1_pos.h5ad`.
+## CLL mtscATAC-seq (Lareau et al. 2021)
+Place in `mtscATAC-seq/`:
+- from https://osf.io/bupge/, `mtscATACpaper_large_data_files/source/cellranger_output/` with
+  `CLL_PT1_CD19pos_peak_bc_matrix/` and `CLL_PT1_CD19pos_v12-mtMask_fragments.tsv.gz` (make its index with
+  `tabix -p bed`), and `mtscATACpaper_large_data_files/source/mgatk_output/CLL_PT1_CD19pos_v12-mtMask_mgatk.rds`;
+- the source study's reproducibility repository (https://github.com/caleblareau/mtscATACpaper_reproducibility) as
+  `mtscATACpaper_reproducibility/` (its `figure_CLL/data/` and `figure_CLL/output/` are read).
+1. `CLL/get_filtering_num.R` — the cells kept: called by cellranger-atac, at least 1,000 fragments, at least 50% of them
+   in the fixed-width peaks of the source study, mitochondrial coverage of at least 20 (`CLL/row_del/`, included; the
+   script writes the same file).
+2. `CLL/signac_pp.R` — Signac: the peak-by-cell counts of these cells, peaks observed in at least 10 cells and cells with
+   at least 200 fragments, then TF-IDF, LSI, UMAP and clustering on the top 25% of peaks, and the gene activity →
+   `mtscATAC-seq/h5_files/PT1_pos_pp.h5seurat`/`.h5ad`. The model input is the raw counts of all kept peaks.
+3. `CLL/export_mgatk.R` — the mgatk allele counts as `.mtx` files (`mtscATAC-seq/rds_output/PT1_pos_mg/`; the export used
+   for the study was not kept) and the clones that the source study defined (`PT1_clone_definition.rds`) as
+   `mtscATAC-seq/rds_output/clone_definition/PT1.tsv`.
+4. `CLL/build_model_inputs.ipynb` — `PT1_pos.h5ad` and `PT1_pos_mg.h5ad`, written to `data/ATAC/rebuilt/`.
+   `PT1_pos_mg.h5ad` is identical to the deposited file. `PT1_pos.h5ad` has the same counts, peaks, cells, clones and
+   LSI clusters, and the same LSI up to the sign of its components; the UMAP of Signac, which is not used, differs. Its
+   `raw.var` lists the peaks of patient 1, whereas the deposited file lists there those of patient 2, by an error of
+   the study's notebook (its counts are those of patient 1, and the model reads the peaks from `var`).
 
 ## Ovarian tumor mtscATAC-seq cohort (GEO GSE302113)
 1. Download from SRA, alignment and peak calling (cellranger-atac 2.1.0, GRCh38), mitochondrial allele counts

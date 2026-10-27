@@ -130,8 +130,9 @@ The fits of the paper are trained by the scripts in `retrain/` ([retrain/README.
 in `src/`. The results above are computed from the deposited fits.
 
 ### Preprocessing
-From the public raw data to the model inputs: [preprocess/README.md](preprocess/README.md). The model inputs of the
-ovarian cohort are rebuilt and compared with the deposited ones by `preprocess/ovarian/build_model_inputs.ipynb`.
+From the public raw data to the model inputs: [preprocess/README.md](preprocess/README.md). The model inputs of
+MAESTER, CLL and the ovarian cohort are rebuilt and compared with the deposited ones by the notebooks
+`preprocess/{MAESTER,CLL,ovarian}/build_model_inputs.ipynb`.
 
 ## License
 MIT (see `LICENSE`).
