@@ -98,8 +98,10 @@ PBMC3k (10x Genomics, via Scanpy), MAESTER (GEO GSE182685), CLL mtscATAC-seq (ht
 tumor mtscATAC-seq cohort (GEO GSE302113).
 
 ### Results: `analysis/`
-Every figure panel, table and number of the Results and Methods is computed by the notebooks and R scripts in
-`analysis/`, from the deposited data and fits. Each notebook says at each step what is computed and why, shows the values
+The notebooks and R scripts in `analysis/` compute the figure panels, tables and numbers of the Results and Methods from
+the deposited data and fits, except the schematics drawn by hand (Fig. 1, Supplementary Fig. S1 and Fig. 2a) and the
+training settings of Supplementary Table 2 (in `retrain/`).
+Each notebook says at each step what is computed and why, shows the values
 it computes, and ends with a table that compares the numbers quoted in the paper with the computed ones. The notebooks
 are kept with their outputs. They are run from `analysis/` (each starts with `%cd ../src`); the R scripts are run from
 the repository root (`Rscript analysis/<script>.R`). Everything is written to `analysis/results/<dataset>/`: one file per
