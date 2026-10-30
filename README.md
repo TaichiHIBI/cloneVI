@@ -37,11 +37,16 @@ adata, adata_mg = workflow.estimate_probability(adata, adata_mg, mutations, save
                                                 model_params={'use_phi_common': True})
 ```
 
+To run CloneVI on your own data, start from [template/run_cloneVI.py](template/run_cloneVI.py): with a comment at
+each step, it builds the two inputs from your files, checks them and trains the model.
+
 ### Required parameters
-* `adata` : AnnData of the cell-state input; `X` holds raw counts (genes or peaks) of the cells.
-* `adata_mg` : AnnData of the mtDNA mutations for the same cells in the same order; `X` holds the read depth and
-  `layers['all_mut']` the counts of the mutant allele at each position.
-* `mutations` : positions (columns of `adata_mg`) to use.
+* `adata` : AnnData of the cell-state input; `X` holds raw counts (genes or peaks) of the cells. Every column enters
+  the model, so the features are chosen beforehand (e.g. the 2,000 most variable genes).
+* `adata_mg` : AnnData of the mtDNA mutations for the same cells in the same order (the order is not checked); `X`
+  holds the read depth and `layers['all_mut']` the counts of the mutant allele at each position. Every column enters
+  the model, so it holds only the positions to use.
+* `mutations` : the names of the columns of `adata_mg`, in the same order.
 * `save_dir` : output directory; results are written to `save_dir/experiment_name/YYYYMM/DD/HHMMSS/`.
 * `loss_hparams` : temperatures and regularization weights of the loss.
     * `kld_temp`, `binom_temp`, `sp_temp` : temperatures of the KL divergence, the mutation likelihood and the
@@ -58,8 +63,8 @@ adata, adata_mg = workflow.estimate_probability(adata, adata_mg, mutations, save
     * `use_phi_common` : decompose the allele frequency of each clone into a component shared by all clones and a
       clone-specific component (default `False`; the CLL and ovarian fits of the paper used `True`).
     * `freeze_z_after_x` : keep the encoder fixed after the first stage (default `True`).
-* `epoch_num` : maximum epochs per stage (default `20000`); each stage stops early when its validation loss stops improving
-  (`stage_patience_x`, `stage_patience_pi`).
+* `epoch_num` : maximum number of epochs, counted over all stages (default `20000`); each stage stops early when its
+  validation loss stops improving (`stage_patience_x`, `stage_patience_pi`).
 * `lr` : learning rate (default `4e-3`), with `ReduceLROnPlateau` when `lr_scheduler=True` (`lr_patience`, `lr_factor`).
 * `warmup_epochs` : learning-rate warm-up of the first stage (default `3000`).
 * `val_ratio`, `test_ratio` : fractions of cells held out for validation and test (defaults `0.05`, `0.1`).
