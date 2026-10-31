@@ -34,7 +34,7 @@ Place in `mtscATAC-seq/`:
    in the fixed-width peaks of the source study, mitochondrial coverage of at least 20 (`CLL/row_del/`, included; the
    script writes the same file).
 2. `CLL/signac_pp.R` — Signac: the peak-by-cell counts of these cells, peaks observed in at least 10 cells and cells with
-   at least 200 fragments, then TF-IDF, LSI, UMAP and clustering on the top 25% of peaks, and the gene activity →
+   at least 200 detected peaks, then TF-IDF, LSI, UMAP and clustering on the top 25% of peaks, and the gene activity →
    `mtscATAC-seq/h5_files/PT1_pos_pp.h5seurat`/`.h5ad`. The model input is the raw counts of all kept peaks.
 3. `CLL/export_mgatk.R` — the mgatk allele counts as `.mtx` files (`mtscATAC-seq/rds_output/PT1_pos_mg/`; the export used
    for the study was not kept) and the clones that the source study defined (`PT1_clone_definition.rds`) as

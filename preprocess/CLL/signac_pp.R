@@ -1,5 +1,5 @@
 # Signac processing of CLL patient 1, CD19+ (CLL_PT1_CD19pos): the cellranger-atac peak-by-cell counts of the cells
-# kept by get_filtering_num.R, peaks observed in at least 10 cells and cells with at least 200 fragments, then the
+# kept by get_filtering_num.R, peaks observed in at least 10 cells and cells with at least 200 detected peaks, then the
 # top 25% of peaks by count (FindTopFeatures, q75) for TF-IDF, LSI, UMAP and clustering (the LSI clusters of
 # Fig. 4a), and the gene activity.  Writes mtscATAC-seq/h5_files/PT1_pos_pp.h5seurat and its h5ad (counts of all
 # kept peaks in raw.X).
