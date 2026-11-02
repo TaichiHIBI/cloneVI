@@ -2,8 +2,8 @@
 
 The fits of the Zenodo record (https://doi.org/10.5281/zenodo.23687068) go here: unpack `cloneVI_output.tar.gz` at the
 repository root (`tar -xzf cloneVI_output.tar.gz`). Each fit is a folder `<experiment>/<YYYYMM>/<DD>/<HHMMSS>/` with
-`cloneVI_result.h5ad`, `cloneVI_test_result.h5ad`, `used_parameters.txt`, `split_idx.npz`, `models/` (the weights of
-the results), `plots/` and `logs/` (TensorBoard).
+`cloneVI_result.h5ad`, `cloneVI_test_result.h5ad`, `used_parameters.txt`, `split_idx.npz` and `models/` (the weights
+of the results). The `plots/` and `logs/` (TensorBoard) that the training also writes are not in the record.
 
 | Folder | Fit | Trained by |
 |---|---|---|
