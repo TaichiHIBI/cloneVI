@@ -18,3 +18,8 @@ output/*
 
 # files written by the notebooks and scripts (figure panels, tables, intermediate results)
 /analysis/results/
+
+# the checksum list of the Zenodo record, placed at the root to run sha256sum -c
+/SHA256SUMS.txt
+# copies of the notebooks executed under another name (jupyter nbconvert --execute --output <name>.executed.ipynb)
+/analysis/*.executed.ipynb
